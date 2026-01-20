@@ -1,0 +1,40 @@
+#Sunny_Wu_wusunny1_1010978239
+#Ivan_Zhuo_zhuoiva1_1011039984
+
+# Read each relevant table into sets and parameters
+
+# [] represents the column you treat as an index 
+# _ ~ ___ represents the values (assigned to a parameter) at corresponding index 
+
+table Shoe_Table "ODBC" "WARP2011W.mdb" "SQL=SELECT Product_Num, Sales_Price FROM Product_Master":
+	SHOE_TYPE <- [Product_Num], P ~ Sales_Price;
+read table Shoe_Table;
+
+table Machine_Master "ODBC" "WARP2011W.mdb" "SQL=SELECT Machine_Num, OpCost_per_min FROM Machine_Master":
+	MACHINE_TYPE <- [Machine_Num], C_m ~ OpCost_per_min;
+read table Machine_Master;
+
+table Machine_Assign "ODBC" "WARP2011W.mdb" "SQL=SELECT Product_Num, Machine_Num, Avg_Duration FROM Machine_Assign":
+	[Product_Num, Machine_Num], t ~ Avg_Duration;
+read table Machine_Assign;
+
+table RM_Master "ODBC" "WARP2011W.mdb" "SQL=SELECT RM_Num, Cost, S_Quantity FROM RM_Master":
+	RAW_MATERIAL_TYPE <- [RM_Num], C_r ~ Cost, Q_r ~ S_Quantity;
+read table RM_Master;
+
+table BOM "ODBC" "WARP2011W.mdb" "SQL=SELECT Product_Num, RM_Num, Quantity FROM BOM":
+	[Product_Num, RM_Num], A ~ Quantity;
+read table BOM;
+
+table Warehouse_Master "ODBC" "WARP2011W.mdb" "SQL=SELECT Warehouse_Num, Capacity, Op_Cost FROM Warehouse_Master":
+	WAREHOUSE_TYPE <- [Warehouse_Num], W ~ Capacity, C_w ~ Op_Cost;
+read table Warehouse_Master;
+
+# Import forecasted demand for each item
+table Product_Demand "ODBC" "WARP2011W.mdb" "SQL=SELECT Product_Num, 20*AVG(Demand) AS [Annual_Demand] FROM Product_Demand WHERE Month=2 GROUP BY Product_Num ORDER BY Product_Num":
+	[Product_Num], D ~ Annual_Demand;
+read table Product_Demand;
+
+	
+
+
